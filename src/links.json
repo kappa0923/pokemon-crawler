@@ -2507,6 +2507,24 @@
       "headers": {
         "paldea_no": "400"
       }
+    },
+    {
+      "url": "https://yakkun.com/sv/zukan/n4",
+      "headers": {
+        "paldea_no": "401"
+      }
+    },
+    {
+      "url": "https://yakkun.com/sv/zukan/n5",
+      "headers": {
+        "paldea_no": "402"
+      }
+    },
+    {
+      "url": "https://yakkun.com/sv/zukan/n6",
+      "headers": {
+        "paldea_no": "403"
+      }
     }
   ]
 }

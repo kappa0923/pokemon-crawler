@@ -21,6 +21,9 @@ const crawler = new PuppeteerCrawler({
     const title = (await page.title()).match(/(.*?)｜.*/)[1];
     log.info(`Processing ${request.url}, ${title}...`);
 
+    // const content = await page.content()
+    // console.log(content.match(/.*(<div.*?id="contents".*?>).*/)[1]);
+
     // 指定したselectorの要素を処理する
     const stats = await page.$$eval('div#contents.contents', ($posts) => {
       const baseStatsPattern = /.*?(\d+)\(/;
@@ -50,11 +53,22 @@ const crawler = new PuppeteerCrawler({
       };
     });
 
-    const moves = await page.$$eval('#move_list > tbody > tr.move_main_row', ($posts) => {
+    const moves = await page.$$eval('#move_list > tbody > tr', ($posts) => {
       let moves = new Set();
-      for (const $post of $posts) {
-        moves.add($post.querySelector('a').innerText);
-      }
+      // 覚える技のテーブルから列ごとに処理
+      $posts.forEach(($post, i) => {
+        // 変化技を省く(技名と技種別の2列になっているのでi+1で次の行の要素を利用する)
+        const moveMainRow = $post.querySelector('td.move_name_cell > a');
+        if (moveMainRow) {
+          const type = $posts[i + 1].querySelector('td.physics > span')?.className
+            ?? $posts[i + 1].querySelector('td.special > span')?.className
+            ?? $posts[i + 1].querySelector('td.change > span')?.className;
+          if (type !== 'change') {
+            moves.add(moveMainRow.innerText);
+          }
+        }
+      })
+
       return { moves: Array.from(moves) };
     });
 
